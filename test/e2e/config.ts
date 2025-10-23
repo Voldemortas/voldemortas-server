@@ -1,0 +1,8 @@
+export const rootDir = import.meta.dir + '/server/'
+export const outDir = rootDir + 'out'
+export const srcDir = rootDir + 'src'
+export const entryPoint = srcDir + '/server.ts'
+export const staticDir = 'static'
+export const frontDir = srcDir + '/front/'
+export const defaultHtml = srcDir + '/default.html'
+export const devHtml = srcDir + '/development.html'

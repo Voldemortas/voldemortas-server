@@ -1,0 +1,48 @@
+{
+  "name": "voldemortas-server",
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./route": {
+      "import": {
+        "types": "./dist/route/index.d.ts",
+        "default": "./dist/route/index.js"
+      }
+    },
+    "./utils": {
+      "import": {
+        "types": "./dist/utils/index.d.ts",
+        "default": "./dist/utils/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "devDependencies": {
+    "bunup": "^0.15.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5",
+    "bun": "^1.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sass": "^1.89.2",
+    "@types/bun": "^1.2.17",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@types/sass": "^1.45.0"
+  },
+  "scripts": {
+    "build": "bunup --exports --target=bun; dd if=/dev/null of=dist/utils/index.js bs=1 seek=$(echo $(stat --format=%s dist/utils/index.js ) - $( tail -n1 dist/utils/index.js | wc -c) | bc )"
+  }
+}
