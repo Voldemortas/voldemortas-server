@@ -74,7 +74,7 @@ export default async function buildFront(
     return 1
   }
 
-  await $`rm -rf ${tempDir}`
+  // await $`rm -rf ${tempDir}`
 }
 
 function generateJS(hash: string) {
