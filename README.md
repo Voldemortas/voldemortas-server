@@ -19,7 +19,8 @@ Or you can browse former releases at [the release page](https://github.com/Volde
 
 ## Documentation
 
-For a quick example refer to the [test/e2e/](test/e2e) directory (ignore the `tests/` directory).
+For a quick example refer to the [test/e2e/](test/e2e) directory (ignore the `tests/` directory). You can also consult 
+[Voldemortas/kalbynas](https://github.com/Voldemortas/kalbynas) which uses this project. 
 
 -----
 
@@ -49,8 +50,6 @@ Then you are presented with 4 flags:
 * `--serve` - runs the build project from the `outDir`.
 * `--prod` - used to build/serve the server for production mode.
 * `--watch` - builds the dev mode and runs the server in dev mode with hot reloading.
-  Cannot be combined with other flags.
-* `--start` - runs the server in memory without building any artifacts in the dev mode.
   Cannot be combined with other flags.
 
 You can then run commands like `bun run path/to/index.ts --watch` or `bun run path/to/index.ts --build --serve --prod`.
@@ -116,6 +115,24 @@ console.log(`Listening on ${server.url}`)
 ```
 
 -----
+
+## Building
+
+## Building details
+
+The server building works in several steps:
+
+0. Removes `$outDir` directory and creates an empty one
+1. Copies content from `$srcDir/$staticDir` to `$outDir/$staticDir`
+2. Creates `$tempDir` directory and copies content from `$frontDir` there
+3. Runs _SASS_ compiler on `*.scss` files found in `$tempDir` and creates corresponding `[name].css` files
+4. If the file was `*.module.scss` and it had `$uniqueId` then creates `[name].js` file used for unique-prefixed styles
+5. Checks every `*.tsx` file and updates imports for original `*.module.scss` to include both new compiled `.css` and
+   `.js` files
+6. Checks `$routes` for _React_ entry points and based on them builds single `[name].js` and `[name].css` files into
+   `/out/front/` directory
+7. Compiles `$entryPoint` into bundled version within `$outDir` directory.
+
 
 ## Caveats
 
