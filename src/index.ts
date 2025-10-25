@@ -209,6 +209,7 @@ export async function wrap({
   outDir,
   staticDir,
   frontDir,
+  tempDir,
   entryPoint,
   defaultHtml,
   developmentHtml,
@@ -220,6 +221,7 @@ export async function wrap({
   outDir: string
   staticDir: string
   frontDir: string
+  tempDir: string
   entryPoint: string
   defaultHtml: string
   developmentHtml: string
@@ -234,6 +236,7 @@ export async function wrap({
       srcDir,
       staticDir,
       frontDir,
+      tempDir,
       defaultHtml,
       developmentHtml,
       globalScssOptions,
@@ -247,6 +250,7 @@ export async function wrap({
       srcDir,
       rootDir,
       frontDir,
+      tempDir,
       entryPoint,
       defaultHtml,
       developmentHtml,

@@ -1,7 +1,6 @@
 import {$} from 'bun'
 import buildFront from './build-front.ts'
 import buildBack from './build-back.ts'
-import fs from 'node:fs/promises'
 import {ReactRoute, type Route} from 'src/route'
 import buildGlobalScss from './build-global.scss';
 
@@ -14,6 +13,7 @@ export default async function build({
   staticDir,
   entryPoint,
   rootDir,
+  tempDir,
   routes,
   globalScssOptions = undefined
 }: {
@@ -25,24 +25,10 @@ export default async function build({
   staticDir: string
   entryPoint: string
   rootDir: string
-  routes: Route[],
+  tempDir: string,
+  routes: Route[]
   globalScssOptions?: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
 }) {
-  const TEMP_DIR = (await fs.mkdtemp(rootDir + '/')) + '/'
-
-  console.log({
-    outDir,
-    defaultHtml,
-    developmentHtml,
-    srcDir,
-    frontDir,
-    staticDir,
-    entryPoint,
-    rootDir,
-    globalScssOptions
-  })
-
-
   log('Starting the build')
   await $`rm -rf ${outDir}`
   await $`mkdir ${outDir}`
@@ -62,7 +48,7 @@ export default async function build({
   const frontPaths = (routes as ReactRoute[])
     .filter((p) => p.type === 'react')
     .map((p) => p.reactPath)
-  await buildFront(frontPaths, TEMP_DIR, outDir, frontDir)
+  await buildFront(frontPaths, tempDir, outDir, frontDir)
   log('Building backend')
   await buildBack(entryPoint, /^\//.test(outDir) ? outDir : rootDir + outDir + '/', srcDir)
   log('Build completed')

@@ -11,6 +11,7 @@ export default class Watch {
   private readonly srcDir: string
   private readonly staticDir: string
   private readonly frontDir: string
+  private readonly tempDir: string
   private readonly defaultHtml: string
   private readonly developmentHtml: string
   private readonly globalScssOptions: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
@@ -27,6 +28,7 @@ export default class Watch {
     srcDir: string,
     staticDir: string,
     frontDir: string,
+    tempDir: string,
     defaultHtml: string,
     developmentHtml: string,
     globalScssOptions: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string },
@@ -38,6 +40,7 @@ export default class Watch {
     this.srcDir = srcDir
     this.staticDir = staticDir
     this.frontDir = frontDir
+    this.tempDir = tempDir
     this.defaultHtml = defaultHtml
     this.developmentHtml = developmentHtml
     this.globalScssOptions = globalScssOptions
@@ -85,6 +88,7 @@ export default class Watch {
       srcDir: this.srcDir,
       staticDir: this.staticDir,
       frontDir: this.frontDir,
+      tempDir: this.tempDir,
       defaultHtml: this.defaultHtml,
       developmentHtml: this.developmentHtml,
       globalScssOptions: this.globalScssOptions

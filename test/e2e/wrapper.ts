@@ -9,7 +9,8 @@ import {
   outDir,
   rootDir,
   srcDir,
-  staticDir
+  staticDir,
+  tempDir,
 } from 'test/e2e/config.ts';
 
 await wrap({
@@ -19,6 +20,7 @@ await wrap({
   entryPoint,
   staticDir,
   frontDir,
+  tempDir,
   defaultHtml,
   developmentHtml: devHtml,
   globalScssOptions,

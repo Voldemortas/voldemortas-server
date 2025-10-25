@@ -37,6 +37,7 @@ await wrap({
   entryPoint, //the path to the server.ts 
   staticDir, //the RELATIVE path within the source directory to the static files directory such as `static`
   frontDir, //the path where your frontend react is
+  tempDir, //the for some react magic, gets created and deleted during build
   defaultHtml, //the path to the html template where the react code will be injected
   developmentHtml, //the path to the additional content for development only (like hot reloading)
   globalScssOptions, //optional, allows defining global.css built from a .scss file

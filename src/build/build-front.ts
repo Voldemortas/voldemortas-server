@@ -47,7 +47,7 @@ export default async function buildFront(
     }
     await Promise.all(
       tsxFiles.map(async (f) => {
-        const tsxFile = Bun.file(`${tempDir}${f}`)
+        const tsxFile = Bun.file(`${tempDir}/${f}`)
         await Bun.write(
           tsxFile,
           (await tsxFile.text()).replace(
@@ -58,9 +58,11 @@ export default async function buildFront(
       })
     )
 
+    const frontDirName = frontDir.match(/^.+\/([^/]+)\/?$/)!.flat()[1]!
+
     const buildOutput = await Bun.build({
-      entrypoints: entrypoints.map((e) => tempDir + e),
-      outdir: outDir,
+      entrypoints: entrypoints.map((e) => `${tempDir}${e.replace(new RegExp(`^${frontDirName}`), '')}`),
+      outdir: `${outDir}/${frontDirName}`,
       minify: isProd(),
       root: tempDir,
       target: 'browser',
@@ -74,7 +76,7 @@ export default async function buildFront(
     return 1
   }
 
-  // await $`rm -rf ${tempDir}`
+  await $`rm -rf ${tempDir}`
 }
 
 function generateJS(hash: string) {

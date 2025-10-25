@@ -3,6 +3,7 @@ const metaDir = import.meta.dir
 export const rootDir = metaDir + (metaDir.includes('/out') ? '/../' : '/server/')
 export const outDir = rootDir + 'out'
 export const srcDir = rootDir + 'src'
+export const tempDir = rootDir + 'temp'
 export const entryPoint = srcDir + '/server.ts'
 export const staticDir = 'static'
 export const frontDir = srcDir + '/front/'

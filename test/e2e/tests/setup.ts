@@ -6,6 +6,7 @@ import {
   devHtml,
   entryPoint,
   frontDir,
+  tempDir,
   globalScssOptions,
   outDir,
   rootDir,
@@ -13,7 +14,19 @@ import {
   staticDir
 } from 'test/e2e/config.ts';
 
-const watcher = new Watch(entryPoint, rootDir, outDir, srcDir, staticDir, frontDir, defaultHtml, devHtml, globalScssOptions, routes)
+const watcher = new Watch(
+  entryPoint,
+  rootDir,
+  outDir,
+  srcDir,
+  staticDir,
+  frontDir,
+  tempDir,
+  defaultHtml,
+  devHtml,
+  globalScssOptions,
+  routes,
+)
 
 function timeout(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
