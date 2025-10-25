@@ -21,4 +21,8 @@ describe('react test', () => {
     const file = await fetch('http://localhost:9900/front/h1.js')
     expect(file.ok).toBeTrue()
   })
+  it('has the react css module existing', async () => {
+    const file = await fetch('http://localhost:9900/front/h1.css')
+    expect(file.ok).toBeTrue()
+  })
 });

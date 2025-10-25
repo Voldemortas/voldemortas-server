@@ -26,9 +26,22 @@ export default async function build({
   entryPoint: string
   rootDir: string
   routes: Route[],
-  globalScssOptions?: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName?: string | undefined }
+  globalScssOptions?: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
 }) {
   const TEMP_DIR = (await fs.mkdtemp(rootDir + '/')) + '/'
+
+  console.log({
+    outDir,
+    defaultHtml,
+    developmentHtml,
+    srcDir,
+    frontDir,
+    staticDir,
+    entryPoint,
+    rootDir,
+    globalScssOptions
+  })
+
 
   log('Starting the build')
   await $`rm -rf ${outDir}`
@@ -43,7 +56,7 @@ export default async function build({
   }
   if(globalScssOptions !== undefined) {
     log('Building global css')
-    await buildGlobalScss({...globalScssOptions, outDir, staticDir})
+    await buildGlobalScss(globalScssOptions)
   }
   log('Building frontend')
   const frontPaths = (routes as ReactRoute[])

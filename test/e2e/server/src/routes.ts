@@ -1,4 +1,4 @@
-import { BackRoute, ReactRoute, Route } from 'voldemortas-server/route'
+import { BackRoute, ReactRoute, Route, RedirectRoute } from 'voldemortas-server/route'
 import currentDate from './back/currentDate.ts'
 
 const routes = [
@@ -10,6 +10,10 @@ const routes = [
     text: 'ik ben een tekst',
   })),
   currentDate,
+  new RedirectRoute('/global.css', '/static/global.css', [
+    'headers',
+    '{"content-type": "text/css"}',
+  ]),
 ] as Route[]
 
 export default routes

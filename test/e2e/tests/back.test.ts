@@ -12,4 +12,12 @@ describe('backend test', () => {
     const value = await (await fetch('http://localhost:9900/')).text()
     expect(value).toBe(LABAS)
   })
+  it('has the global css existing', async () => {
+    const file = await fetch('http://localhost:9900/global.css')
+    expect(file.ok).toBeTrue()
+  })
+  it('has the built global css', async () => {
+    const text = await(await fetch('http://localhost:9900/global.css')).text()
+    expect(text).toContain('font-size: 60px;')
+  })
 });

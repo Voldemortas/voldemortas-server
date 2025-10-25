@@ -8,7 +8,6 @@ import {
   type Route,
 } from 'src/route'
 import {getConfigVars, getPage, getUrl, isProd, parseArgs} from 'src/utils'
-
 const lastUpdated = new Date().getTime().toString()
 const {HASH, PORT, HOSTNAME} = getConfigVars()
 const DEFAULT_HTML = import.meta.dir + '/default.html'
@@ -22,6 +21,7 @@ export default class Server {
   public readonly routes: Route[]
   public readonly defaultHtml: string
   public readonly developmentHtml: string
+  public readonly outDir: string
   public readonly renderReact: (
     request: Request,
     hash: string,
@@ -41,6 +41,7 @@ export default class Server {
     staticPaths = /\B\b/,
     defaultHtml = DEFAULT_HTML,
     developmentHtml = DEV_HTML,
+    outDir,
     renderReact = reactRenderImpl,
     replaceFn = (htmlContent: string) => htmlContent,
     routes,
@@ -51,6 +52,7 @@ export default class Server {
     staticPaths?: string | RegExp | (RegExp | string)[]
     defaultHtml?: string
     developmentHtml?: string
+    outDir: string,
     renderReact?: (
       request: Request,
       hash: string,
@@ -68,6 +70,7 @@ export default class Server {
     this.staticPaths = [staticPaths].flat().map(Server.makeRegexP)
     this.defaultHtml = defaultHtml
     this.developmentHtml = developmentHtml
+    this.outDir = outDir
     this.renderReact = renderReact
     this.replaceFn = replaceFn
     this.routes = routes
@@ -96,7 +99,6 @@ export default class Server {
         }
 
         const {pathname} = getUrl(request)
-
         if (that.staticPaths.filter((path) => path.test(pathname)).length > 0) {
           return await that.serveStatic(request)
         }
@@ -140,7 +142,7 @@ export default class Server {
     params: string[] = []
   ) {
     const {pathname} = getUrl(request)
-    const file = Bun.file(`out${staticPath ?? pathname}`)
+    const file = Bun.file(`${this.outDir}/${staticPath ?? pathname}`.replaceAll('//', '/'))
     if (!(await file.exists())) {
       return this.fourOFour(request)
     }
@@ -208,8 +210,9 @@ export async function wrap({
   staticDir,
   frontDir,
   entryPoint,
-  defaultHtml = DEFAULT_HTML,
-  developmentHtml = DEV_HTML,
+  defaultHtml,
+  developmentHtml,
+  globalScssOptions = undefined,
   routes,
 }: {
   rootDir: string
@@ -218,14 +221,11 @@ export async function wrap({
   staticDir: string
   frontDir: string
   entryPoint: string
-  defaultHtml?: string
-  developmentHtml?: string
+  defaultHtml: string
+  developmentHtml: string
+  globalScssOptions?: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
   routes: Route[]
 }): Promise<void> {
-  if (!!parseArgs('start', {isPlain: true})) {
-    await serve(entryPoint, false)
-    return;
-  }
   if (!!parseArgs('watch', {isPlain: true})) {
     return await new Watch(
       entryPoint,
@@ -236,6 +236,7 @@ export async function wrap({
       frontDir,
       defaultHtml,
       developmentHtml,
+      globalScssOptions,
       routes
     ).watch()
   }
@@ -249,6 +250,7 @@ export async function wrap({
       entryPoint,
       defaultHtml,
       developmentHtml,
+      globalScssOptions,
       routes,
     })
   }

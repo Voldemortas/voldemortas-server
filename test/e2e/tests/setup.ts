@@ -1,9 +1,19 @@
 import {beforeAll, afterAll} from 'bun:test';
 import Watch from 'src/build/watch.ts';
 import routes from 'test/e2e/server/src/routes.ts';
-import {defaultHtml, devHtml, entryPoint, frontDir, outDir, rootDir, srcDir, staticDir} from 'test/e2e/config.ts';
+import {
+  defaultHtml,
+  devHtml,
+  entryPoint,
+  frontDir,
+  globalScssOptions,
+  outDir,
+  rootDir,
+  srcDir,
+  staticDir
+} from 'test/e2e/config.ts';
 
-const watcher = new Watch(entryPoint, rootDir, outDir, srcDir, staticDir, frontDir, defaultHtml, devHtml, routes)
+const watcher = new Watch(entryPoint, rootDir, outDir, srcDir, staticDir, frontDir, defaultHtml, devHtml, globalScssOptions, routes)
 
 function timeout(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));

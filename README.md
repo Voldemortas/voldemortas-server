@@ -39,6 +39,7 @@ await wrap({
   frontDir, //the path where your frontend react is
   defaultHtml, //the path to the html template where the react code will be injected
   developmentHtml, //the path to the additional content for development only (like hot reloading)
+  globalScssOptions, //optional, allows defining global.css built from a .scss file
   routes, //routes as in `routes.ts`
 })
 ```

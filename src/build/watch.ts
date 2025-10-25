@@ -13,6 +13,7 @@ export default class Watch {
   private readonly frontDir: string
   private readonly defaultHtml: string
   private readonly developmentHtml: string
+  private readonly globalScssOptions: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
   private readonly routes: Route[]
 
   private watcher?: FSWatcher
@@ -28,6 +29,7 @@ export default class Watch {
     frontDir: string,
     defaultHtml: string,
     developmentHtml: string,
+    globalScssOptions: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string },
     routes: Route[]
   ) {
     this.entryPoint = entryPoint
@@ -38,6 +40,7 @@ export default class Watch {
     this.frontDir = frontDir
     this.defaultHtml = defaultHtml
     this.developmentHtml = developmentHtml
+    this.globalScssOptions = globalScssOptions
     this.routes = routes
   }
 
@@ -83,7 +86,8 @@ export default class Watch {
       staticDir: this.staticDir,
       frontDir: this.frontDir,
       defaultHtml: this.defaultHtml,
-      developmentHtml: this.developmentHtml
+      developmentHtml: this.developmentHtml,
+      globalScssOptions: this.globalScssOptions
     })
     return await serve(
       this.entryPoint.replace(
