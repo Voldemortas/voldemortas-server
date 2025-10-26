@@ -67,24 +67,33 @@ Used to return a simple any kind of response, be it JSON, txt or even html if yo
 import { BackRoute } from 'voldemortas-server/route'
 import { jsonHeaders } from 'voldemortas-server/utils'
 
-export const backRoute = new BackRoute('/url', ['I am a parameter'], (req: Request, params: any) => {
+export const backRoute = new BackRoute('/url', (req: Request, params: any) => {
   return new Response(JSON.stringify(params), jsonHeaders)
-})
+}, ['I am a parameter'])
+export const dateRoute = new BackRoute('/date', new Request({date: new Date().toISOString()}, jsonHeaders))
+export const pingRoute = new BackRoute('/ping', 'pong')
 ```
-Upon visiting `example.com/url` you'll see `["I am a parameter"]` with the content type being that of JSON.
+Upon visiting `example.com/url` you'll see `["I am a parameter"]` with the content type being that of JSON. And visiting
+`example.com/date` you'll see the current date printed in the ISO format. And `example.com/ping` will return a simple 
+`pong` back.
 
 #### ReactRoute
 
 ```ts
 import { ReactRoute } from 'voldemortas-server/route'
 
-export const reactRoute = new ReactRoute('/react', ['arg'], 'front/reactPage.ts', (req: Request, params: any) => ({
+export const reactRoute = new ReactRoute('/react', 'front/reactPage.ts', (req: Request, params: any) => ({
   h1: 'dis is h1',
   text: params,
-}))
+}), ['arg'])
+// export const reactRoute = new ReactRoute('/react', 'front/reactPage.ts',  {
+//   h1: 'dis is h1',
+//   text: ['arg'],
+// })
 ```
 Upon visiting `example.com/react` you'll see react module from `srcDir/front/reactPage.ts` inserted into the 
-`defaultHtml` template.
+`defaultHtml` template. With the params being `{h1: 'dis is h1', text: params}` for the template. You can also write it
+as shown below in the commented section - you ain't usin' the `request` there anyway.
 
 #### RedirectRoute
 

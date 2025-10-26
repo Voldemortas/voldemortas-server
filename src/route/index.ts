@@ -18,13 +18,13 @@ export class ReactRoute extends Route {
 
   public constructor(
     url: string,
-    params: any[],
     reactPath: string,
-    resolver: (request: Request, params: any) => any
+    resolver: ((request: Request, params: any) => any) | any,
+    params: any[] = []
   ) {
     super(url, params, 'react')
     this.reactPath = reactPath
-    this.resolver = resolver
+    this.resolver = typeof resolver === 'function' ? resolver : () => resolver
   }
 }
 export class BackRoute extends Route {
@@ -32,11 +32,17 @@ export class BackRoute extends Route {
 
   public constructor(
     url: string,
-    params: any[],
-    resolver: (request: Request, params: any) => Response
+    resolver: ((request: Request, params: any) => Response) | Response | any,
+    params: any[] = [],
   ) {
     super(url, params, 'back')
-    this.resolver = resolver
+    if(typeof resolver === 'function') {
+      this.resolver = resolver;
+    } else if(resolver instanceof Response) {
+      this.resolver = () => resolver
+    } else {
+      this.resolver = () => new Response(resolver)
+    }
   }
 }
 

@@ -2,10 +2,10 @@ import {describe, it, expect, beforeEach} from 'bun:test'
 
 const GLOBAL_PARAMS = '{"h1":"dis is h1","text":"ik ben een tekst"}'
 
-describe('react test', () => {
+describe.each(['h1', 'h2'])('react test', (path) => {
   let pagerContent: string;
   beforeEach(async () => {
-    pagerContent = await (await fetch('http://localhost:9900/h1')).text()
+    pagerContent = await (await fetch(`http://localhost:9900/${path}`)).text()
   })
   it(`has a good title`, async () => {
     expect(pagerContent).toContain('<title>e2e test</title>')
