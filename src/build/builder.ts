@@ -48,7 +48,9 @@ export default async function build({
   const frontPaths = (routes as ReactRoute[])
     .filter((p) => p.type === 'react')
     .map((p) => p.reactPath)
-  await buildFront(frontPaths, tempDir, outDir, frontDir)
+  if(frontPaths.length > 0) {
+    await buildFront(frontPaths, tempDir, outDir, frontDir)
+  }
   log('Building backend')
   await buildBack(entryPoint, /^\//.test(outDir) ? outDir : rootDir + outDir + '/', srcDir)
   log('Build completed')
