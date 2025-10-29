@@ -14,8 +14,16 @@ export default class Watch {
   private readonly tempDir: string
   private readonly defaultHtml: string
   private readonly developmentHtml: string
-  private readonly globalScssOptions: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
+  private readonly globalScssOptions:
+    | undefined
+    | {
+        scssFilePath: string
+        loadPaths?: string[] | undefined
+        outFileName: string
+      }
   private readonly routes: Route[]
+  private readonly preBuildFn: () => Promise<void>
+  private readonly postBuildFn: () => Promise<void>
 
   private watcher?: FSWatcher
   private server: Subprocess | undefined = undefined
@@ -31,8 +39,16 @@ export default class Watch {
     tempDir: string,
     defaultHtml: string,
     developmentHtml: string,
-    globalScssOptions: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string },
-    routes: Route[]
+    globalScssOptions:
+      | undefined
+      | {
+          scssFilePath: string
+          loadPaths?: string[] | undefined
+          outFileName: string
+        },
+    routes: Route[],
+    preBuildFn = async () => {},
+    postBuildFn = async () => {}
   ) {
     this.entryPoint = entryPoint
     this.rootDir = rootDir
@@ -45,11 +61,12 @@ export default class Watch {
     this.developmentHtml = developmentHtml
     this.globalScssOptions = globalScssOptions
     this.routes = routes
+    this.preBuildFn = preBuildFn
+    this.postBuildFn = postBuildFn
   }
 
-  public async kill(){
-    if(this.server === undefined)
-      return;
+  public async kill() {
+    if (this.server === undefined) return
     this.server.kill()
     this.watcher!.close()
   }
@@ -91,13 +108,14 @@ export default class Watch {
       tempDir: this.tempDir,
       defaultHtml: this.defaultHtml,
       developmentHtml: this.developmentHtml,
-      globalScssOptions: this.globalScssOptions
+      globalScssOptions: this.globalScssOptions,
+      preBuildFn: this.preBuildFn,
+      postBuildFn: this.postBuildFn,
     })
     return await serve(
-      this.entryPoint.replace(
-        this.entryPoint.replace(/(.+)\/([^\/]+)$/, '$1'),
-        this.outDir
-      ).replace(/\.ts$/, '.js'),
+      this.entryPoint
+        .replace(this.entryPoint.replace(/(.+)\/([^\/]+)$/, '$1'), this.outDir)
+        .replace(/\.ts$/, '.js'),
       false
     )
   }

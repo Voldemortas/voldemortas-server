@@ -2,12 +2,9 @@ import Watch from 'src/build/watch'
 import build from 'src/build/builder.ts'
 import serve from 'src/build/serve.ts'
 import reactRenderImpl from 'src/renderReact'
-import {
-  BackRoute,
-  RedirectRoute,
-  type Route,
-} from 'src/route'
+import {BackRoute, RedirectRoute, type Route} from 'src/route'
 import {getConfigVars, getPage, getUrl, isProd, parseArgs} from 'src/utils'
+
 const lastUpdated = new Date().getTime().toString()
 const {HASH, PORT, HOSTNAME} = getConfigVars()
 const DEFAULT_HTML = import.meta.dir + '/default.html'
@@ -28,7 +25,7 @@ export default class Server {
     routes: Route[],
     defaultHtml: string,
     developmentHtml: string,
-    replaceFn?: (htmlContent: string) => string,
+    replaceFn?: (htmlContent: string) => string
   ) => Promise<Response>
   private readonly replaceFn: (htmlContent: string) => string
   private server: undefined | Bun.Server<any>
@@ -52,16 +49,16 @@ export default class Server {
     staticPaths?: string | RegExp | (RegExp | string)[]
     defaultHtml?: string
     developmentHtml?: string
-    outDir: string,
+    outDir: string
     renderReact?: (
       request: Request,
       hash: string,
       routes: Route[],
       defaultHtml: string,
       developmentHtml: string,
-      replaceFn?: (htmlContent: string) => string,
-    ) => Promise<Response>,
-    replaceFn?: (htmlContent: string) => string,
+      replaceFn?: (htmlContent: string) => string
+    ) => Promise<Response>
+    replaceFn?: (htmlContent: string) => string
     routes: Route[]
   }) {
     this.port = port
@@ -142,7 +139,9 @@ export default class Server {
     params: string[] = []
   ) {
     const {pathname} = getUrl(request)
-    const file = Bun.file(`${this.outDir}/${staticPath ?? pathname}`.replaceAll('//', '/'))
+    const file = Bun.file(
+      `${this.outDir}/${staticPath ?? pathname}`.replaceAll('//', '/')
+    )
     if (!(await file.exists())) {
       return this.fourOFour(request)
     }
@@ -171,11 +170,7 @@ export default class Server {
   }
 
   private async serveRedirect(request: Request) {
-    const page = getPage(
-      request,
-      'redirect',
-      this.routes
-    ) as RedirectRoute
+    const page = getPage(request, 'redirect', this.routes) as RedirectRoute
     return await this.serveStatic(request, page.filePath, page.params)
   }
 
@@ -215,6 +210,8 @@ export async function wrap({
   developmentHtml,
   globalScssOptions = undefined,
   routes,
+  preBuildFn = async () => {},
+  postBuildFn = async () => {},
 }: {
   rootDir: string
   srcDir: string
@@ -225,8 +222,16 @@ export async function wrap({
   entryPoint: string
   defaultHtml: string
   developmentHtml: string
-  globalScssOptions?: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
+  globalScssOptions?:
+    | undefined
+    | {
+        scssFilePath: string
+        loadPaths?: string[] | undefined
+        outFileName: string
+      }
   routes: Route[]
+  preBuildFn?: () => Promise<void>
+  postBuildFn?: () => Promise<void>
 }): Promise<void> {
   if (!!parseArgs('watch', {isPlain: true})) {
     return await new Watch(
@@ -240,7 +245,9 @@ export async function wrap({
       defaultHtml,
       developmentHtml,
       globalScssOptions,
-      routes
+      routes,
+      preBuildFn,
+      postBuildFn
     ).watch()
   }
   if (!!parseArgs('build', {isPlain: true})) {
@@ -256,6 +263,8 @@ export async function wrap({
       developmentHtml,
       globalScssOptions,
       routes,
+      preBuildFn,
+      postBuildFn,
     })
   }
   if (!!parseArgs('serve', {isPlain: true})) {

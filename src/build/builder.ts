@@ -2,7 +2,7 @@ import {$} from 'bun'
 import buildFront from './build-front.ts'
 import buildBack from './build-back.ts'
 import {ReactRoute, type Route} from 'src/route'
-import buildGlobalScss from './build-global.scss';
+import buildGlobalScss from './build-global.scss'
 
 export default async function build({
   outDir,
@@ -15,7 +15,9 @@ export default async function build({
   rootDir,
   tempDir,
   routes,
-  globalScssOptions = undefined
+  globalScssOptions = undefined,
+  preBuildFn = async () => Promise<void>,
+  postBuildFn = async () => Promise<void>,
 }: {
   outDir: string
   srcDir: string
@@ -25,11 +27,20 @@ export default async function build({
   staticDir: string
   entryPoint: string
   rootDir: string
-  tempDir: string,
+  tempDir: string
   routes: Route[]
-  globalScssOptions?: undefined | { scssFilePath: string, loadPaths?: string[] | undefined, outFileName: string }
+  globalScssOptions?:
+    | undefined
+    | {
+        scssFilePath: string
+        loadPaths?: string[] | undefined
+        outFileName: string
+      }
+  preBuildFn?: () => void
+  postBuildFn?: () => void
 }) {
   log('Starting the build')
+  await preBuildFn()
   await $`rm -rf ${outDir}`
   await $`mkdir ${outDir}`
   await $`mkdir ${outDir}/status`
@@ -37,10 +48,10 @@ export default async function build({
   log('Copying static files')
   await $`cp -r ${srcDir}/${staticDir}/ ${outDir}/${staticDir}/`
   await $`cp ${defaultHtml} ${outDir}/`
-  if(developmentHtml !== undefined) {
+  if (developmentHtml !== undefined) {
     await $`cp ${developmentHtml} ${outDir}/`
   }
-  if(globalScssOptions !== undefined) {
+  if (globalScssOptions !== undefined) {
     log('Building global css')
     await buildGlobalScss(globalScssOptions)
   }
@@ -48,11 +59,16 @@ export default async function build({
   const frontPaths = (routes as ReactRoute[])
     .filter((p) => p.type === 'react')
     .map((p) => p.reactPath)
-  if(frontPaths.length > 0) {
+  if (frontPaths.length > 0) {
     await buildFront(frontPaths, tempDir, outDir, frontDir)
   }
   log('Building backend')
-  await buildBack(entryPoint, /^\//.test(outDir) ? outDir : rootDir + outDir + '/', srcDir)
+  await buildBack(
+    entryPoint,
+    /^\//.test(outDir) ? outDir : rootDir + outDir + '/',
+    srcDir
+  )
+  await postBuildFn()
   log('Build completed')
 }
 
