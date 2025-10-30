@@ -56,9 +56,16 @@ function getConfigVars<T extends {[key: string]: string}>(defaults?: T) {
   }, {}) as {[key: string]: string | undefined} & T
 }
 
-function getUrl(request: Request, strictHttp = false):
-  {sub: string, pathname: string, href: string, origin: string, searchParams: URLSearchParams}
-{
+function getUrl(
+  request: Request,
+  strictHttp = false
+): {
+  sub: string
+  pathname: string
+  href: string
+  origin: string
+  searchParams: URLSearchParams
+} {
   const url = new URL(request.url)
   const sub = url.hostname.split('.')[0]
   const pathname = url.pathname.replace(/\/+$/, '').replaceAll(/^(?:)$/g, '/')
@@ -94,4 +101,15 @@ const textHeaders = {headers: {'content-type': 'text/plain'}}
 const jsonHeaders = {headers: {'content-type': 'application/json'}}
 const htmlHeaders = {headers: {'content-type': 'text/html'}}
 
-export {getBunEnv, parseArgs, getConfigVar, getConfigVars, getUrl, isProd, getPage, textHeaders, jsonHeaders, htmlHeaders}
+export {
+  getBunEnv,
+  parseArgs,
+  getConfigVar,
+  getConfigVars,
+  getUrl,
+  isProd,
+  getPage,
+  textHeaders,
+  jsonHeaders,
+  htmlHeaders,
+}

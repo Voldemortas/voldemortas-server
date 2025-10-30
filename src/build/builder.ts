@@ -16,8 +16,8 @@ export default async function build({
   tempDir,
   routes,
   globalScssOptions = undefined,
-  preBuildFn = async () => Promise<void>,
-  postBuildFn = async () => Promise<void>,
+  preBuildFn = async () => {},
+  postBuildFn = async () => {},
 }: {
   outDir: string
   srcDir: string
@@ -36,8 +36,8 @@ export default async function build({
         loadPaths?: string[] | undefined
         outFileName: string
       }
-  preBuildFn?: () => void
-  postBuildFn?: () => void
+  preBuildFn?: () => Promise<void>
+  postBuildFn?: () => Promise<void>
 }) {
   log('Starting the build')
   await preBuildFn()

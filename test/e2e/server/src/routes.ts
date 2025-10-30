@@ -1,15 +1,20 @@
-import { BackRoute, ReactRoute, Route, RedirectRoute } from 'voldemortas-server/route'
+import {
+  BackRoute,
+  ReactRoute,
+  Route,
+  RedirectRoute,
+} from 'voldemortas-server/route'
 import currentDate from './back/currentDate.ts'
 
 const routes = [
   new BackRoute('/', (req: Request) => {
     return new Response('labas')
   }),
-  new ReactRoute('/h1', 'front/h1.ts', () => ({
+  new ReactRoute('/h1', 'front/h1.tsx', () => ({
     h1: 'dis is h1',
     text: 'ik ben een tekst',
   })),
-  new ReactRoute('/h2', 'front/h1.ts', {
+  new ReactRoute('/h2', 'front/h1.tsx', {
     h1: 'dis is h1',
     text: 'ik ben een tekst',
   }),

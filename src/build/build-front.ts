@@ -59,9 +59,29 @@ export default async function buildFront(
     )
 
     const frontDirName = frontDir.match(/^.+\/([^/]+)\/?$/)!.flat()[1]!
+    const uniqueEntryPoints = [...new Set(entrypoints)]
+    await Promise.all(
+      uniqueEntryPoints.map(async (entryPoint) => {
+        const entryPointWithFrontDir = entryPoint.replace(
+          new RegExp(`^${frontDirName}/`),
+          ''
+        )
+        const fileName = entryPointWithFrontDir.includes('/')
+          ? entryPointWithFrontDir.replace(
+              /^(.+)(\/)([^\/]+\.tsx)$/,
+              '$1$2__entry__$3'
+            )
+          : `__entry__${entryPointWithFrontDir}`
 
+        await $`echo ${wrapper(entryPointWithFrontDir)} > ${tempDir}/${fileName}`
+        await $`echo ${generateReactJs(fileName)} > ${tempDir}/${entryPointWithFrontDir.replace(/x$/, '')}`
+      })
+    )
     const buildOutput = await Bun.build({
-      entrypoints: entrypoints.map((e) => `${tempDir}${e.replace(new RegExp(`^${frontDirName}`), '')}`),
+      entrypoints: uniqueEntryPoints.map(
+        (e) =>
+          `${tempDir}${e.replace(new RegExp(`^${frontDirName}`), '').replace(/x$/, '')}`
+      ),
       outdir: `${outDir}/${frontDirName}`,
       minify: isProd(),
       root: tempDir,
@@ -84,4 +104,30 @@ function generateJS(hash: string) {
     const hash = '_${hash}_'
     return hash + className
   }`
+}
+
+function wrapper(entryPoint: string) {
+  return (
+    `import EntryPoint from './` +
+    entryPoint.replace(/^.+\/([^\/]+)$/, '$1') +
+    `'
+
+export default function Wrapper(params: any) {
+  return (
+    <>
+      <EntryPoint {...params} />
+    </>
+  )
+}
+`
+  )
+}
+
+function generateReactJs(entryPoint: string) {
+  return `import {createRoot} from 'react-dom/client'
+import Wrapper from './${entryPoint.replace(/^.+\/([^\/]+)$/, '$1')}'
+
+const root = createRoot(document.getElementById('root') as Element)
+//@ts-ignore
+root.render(Wrapper(globalParams))`
 }
