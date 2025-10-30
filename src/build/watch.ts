@@ -3,6 +3,7 @@ import {watch, type FSWatcher} from 'node:fs'
 import build from './builder'
 import type {Route} from 'src/route'
 import serve from 'src/build/serve.ts'
+import {parseArgs} from 'src/utils'
 
 export default class Watch {
   private readonly entryPoint: string
@@ -111,6 +112,7 @@ export default class Watch {
       globalScssOptions: this.globalScssOptions,
       preBuildFn: this.preBuildFn,
       postBuildFn: this.postBuildFn,
+      cleanup: !parseArgs('nocleanup', {isPlain: true}),
     })
     return await serve(
       this.entryPoint

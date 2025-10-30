@@ -57,6 +57,7 @@ Then you are presented with 4 flags:
 * `--prod` - used to build/serve the server for production mode.
 * `--watch` - builds the dev mode and runs the server in dev mode with hot reloading.
   Cannot be combined with other flags.
+* `--nocleanup` - doesn't delete `tempDir` upon failure
 
 You can then run commands like `bun run path/to/index.ts --watch` or `bun run path/to/index.ts --build --serve --prod`.
 Or define them as scripts in your `package.json`.

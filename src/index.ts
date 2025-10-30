@@ -265,6 +265,7 @@ export async function wrap({
       routes,
       preBuildFn,
       postBuildFn,
+      cleanup: !parseArgs('nocleanup', {isPlain: true}),
     })
   }
   if (!!parseArgs('serve', {isPlain: true})) {

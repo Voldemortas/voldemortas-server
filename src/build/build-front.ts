@@ -92,8 +92,7 @@ export default async function buildFront(
       console.error(buildOutput.logs)
     }
   } catch (e) {
-    console.error(e)
-    return 1
+    return Promise.reject(e)
   }
 
   await $`rm -rf ${tempDir}`
