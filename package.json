@@ -1,6 +1,6 @@
 {
   "name": "voldemortas-server",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "files": [
     "dist"
@@ -24,6 +24,12 @@
       "import": {
         "types": "./dist/utils/index.d.ts",
         "default": "./dist/utils/index.js"
+      }
+    },
+    "./test": {
+      "import": {
+        "types": "./dist/test/index.d.ts",
+        "default": "./dist/test/index.js"
       }
     },
     "./package.json": "./package.json"
