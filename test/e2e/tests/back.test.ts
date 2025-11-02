@@ -24,7 +24,27 @@ describe('backend test', () => {
     expect(file.ok).toBeTrue()
   })
   it('has the built global css', async () => {
-    const text = await(await fetch('http://localhost:9900/global.css')).text()
+    const text = await (await fetch('http://localhost:9900/global.css')).text()
     expect(text).toContain('font-size: 60px;')
   })
-});
+  it('has correct headers for global css', async () => {
+    const headers = (await fetch('http://localhost:9900/global.css')).headers
+
+    expect(headers.get('content-type')).toStrictEqual('text/css')
+    expect(headers.get('Cross-Origin-Opener-Policy')).toStrictEqual(
+      'same-origin'
+    )
+    expect(headers.get('Cross-Origin-Resource-Policy')).toStrictEqual(
+      'same-origin'
+    )
+    expect(headers.get('Cross-Origin-Embedder-Policy')).toStrictEqual(
+      'unsafe-none'
+    )
+  })
+  it('has correct headers for reactPage', async () => {
+    const headers = (await fetch('http://localhost:9900/h1')).headers
+
+    expect(headers.get('content-type')).toStrictEqual('text/html')
+    expect(headers.get('test')).toStrictEqual('whatever')
+  })
+})

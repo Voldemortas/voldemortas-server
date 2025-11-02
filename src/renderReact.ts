@@ -32,5 +32,11 @@ export default async function renderReact(
     .replaceAll(/placeholderPath.css/g, `${path}.css?hash=${hash}`)
     .replaceAll(/placeholderPath.js/g, `${path}.js?hash=${hash}`)
 
-  return new Response(replaceFn(newHtmlFile), htmlHeaders)
+  return new Response(replaceFn(newHtmlFile), {
+    headers: {
+      ...page.getPreHeaders(),
+      ...htmlHeaders.headers,
+      ...page.getPostHeaders(),
+    } as HeadersInit,
+  })
 }

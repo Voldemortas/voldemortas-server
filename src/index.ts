@@ -135,21 +135,26 @@ export default class Server {
 
   private async serveStatic(
     request: Request,
-    staticPath?: string,
-    params: string[] = []
+    page: RedirectRoute | null = null
   ) {
     const {pathname} = getUrl(request)
     const file = Bun.file(
-      `${this.outDir}/${staticPath ?? pathname}`.replaceAll('//', '/')
+      `${this.outDir}/${page?.filePath ?? pathname}`.replaceAll('//', '/')
     )
     if (!(await file.exists())) {
       return this.fourOFour(request)
     }
     const headers = Server.getHeadersForRedirect(
-      params,
+      page?.params ?? [],
       Server.getCacheDuration(request)
     )
-    return new Response(file, headers)
+    return new Response(file, {
+      headers: {
+        ...page?.getPreHeaders(),
+        ...headers.headers,
+        ...page?.getPostHeaders(),
+      } as HeadersInit,
+    })
   }
 
   private static getHeadersForRedirect(
@@ -171,7 +176,7 @@ export default class Server {
 
   private async serveRedirect(request: Request) {
     const page = getPage(request, 'redirect', this.routes) as RedirectRoute
-    return await this.serveStatic(request, page.filePath, page.params)
+    return await this.serveStatic(request, page)
   }
 
   protected static getCacheDuration(request: Request): number {

@@ -93,7 +93,8 @@ import {ReactRoute} from 'voldemortas-server/route'
 export const reactRoute = new ReactRoute('/react', 'front/reactPage.tsx', (req: Request, params: any) => ({
   h1: 'dis is h1',
   text: params,
-}), ['arg'])
+}), ['arg']).setPreHeaders({optional: 'true'}).setPostHeaders({'also-optional': 'true'})
+//.setPreHeaders().setPostHeaders() are optional
 // export const reactRoute = new ReactRoute('/react', 'front/reactPage.tsx',  {
 //   h1: 'dis is h1',
 //   text: ['arg'],
@@ -110,6 +111,9 @@ as shown below in the commented section - you ain't usin' the `request` there an
 import {RedirectRoute} from 'voldemortas-server/route'
 
 export const redirectRoute = new RedirectRoute('/global.css', '/static/global.css', ['headers', '{"content-type": "text/css"}'])
+// also equals to
+// new RedirectRoute('/global.css', '/static/global.css').setPreHeaders({'content-type': 'text/css'})
+// new RedirectRoute('/global.css', '/static/global.css').setPostHeaders({'content-type': 'text/css'})
 ```
 
 Upon visiting `example.com/global.css` you'll see a file served from the `/static/global.css` with the css headers. The

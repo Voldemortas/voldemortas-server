@@ -13,7 +13,7 @@ const routes = [
   new ReactRoute('/h1', 'front/h1.tsx', () => ({
     h1: 'dis is h1',
     text: 'ik ben een tekst',
-  })),
+  })).setPreHeaders({test: 'whatever'}),
   new ReactRoute('/h2', 'front/h1.tsx', {
     h1: 'dis is h1',
     text: 'ik ben een tekst',
@@ -23,7 +23,15 @@ const routes = [
   new RedirectRoute('/global.css', '/static/global.css', [
     'headers',
     '{"content-type": "text/css"}',
-  ]),
+  ])
+    .setPreHeaders({
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Resource-Policy': 'same-site',
+    })
+    .setPostHeaders({
+      'Cross-Origin-Resource-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+    }),
 ] as Route[]
 
 export default routes
