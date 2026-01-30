@@ -91,11 +91,30 @@ export default async function buildFront(
     if (!buildOutput.success) {
       console.error(buildOutput.logs)
     }
+    const cssPaths = buildOutput.outputs
+      .map(({path}) => path)
+      .filter((path) => /\.css$/.test(path))
+    await fixCssLightDark(cssPaths)
   } catch (e) {
     return Promise.reject(e)
   }
 
   await $`rm -rf ${tempDir}`
+}
+
+async function fixCssLightDark(cssPaths: string[]) {
+  await Promise.all(
+    cssPaths.map(async (path) => {
+      const file = Bun.file(path)
+      await Bun.write(
+        path,
+        (await file.text()).replaceAll(
+          /var\(--buncss-light, ([^)]+\)?)\) var\(--buncss-dark, ([^)]+\)?)\)/g,
+          'light-dark($1, $2)'
+        )
+      )
+    })
+  )
 }
 
 function generateJS(hash: string) {

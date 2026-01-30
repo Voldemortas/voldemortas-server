@@ -13,6 +13,7 @@ const routes = [
   new ReactRoute('/h1', 'front/h1.tsx', () => ({
     h1: 'dis is h1',
     text: 'ik ben een tekst',
+    //@ts-ignore
   })).setPreHeaders({test: 'whatever'}),
   new ReactRoute('/h2', 'front/h1.tsx', {
     h1: 'dis is h1',

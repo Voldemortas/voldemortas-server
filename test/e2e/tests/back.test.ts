@@ -47,4 +47,11 @@ describe('backend test', () => {
     expect(headers.get('content-type')).toStrictEqual('text/html')
     expect(headers.get('test')).toStrictEqual('whatever')
   })
+  it('has correct css for reactPage', async () => {
+    const css = await (await fetch(`http://localhost:9900/front/h1.css`)).text()
+    expect(css).toContain(`_test {
+  color: light-dark(#ff0102, #01ff02);
+}
+`)
+  })
 })
