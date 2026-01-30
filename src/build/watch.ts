@@ -1,9 +1,12 @@
 import type {Subprocess} from 'bun'
 import {watch, type FSWatcher} from 'node:fs'
 import build from './builder'
-import type {Route} from 'src/route'
+import type {Route as OriginalRoute} from 'src/route'
+import type {Route as VoldemortasRoute} from 'voldemortas-server/route'
 import serve from 'src/build/serve.ts'
 import {parseArgs} from 'src/utils'
+
+type Route = OriginalRoute | VoldemortasRoute
 
 export default class Watch {
   private readonly entryPoint: string

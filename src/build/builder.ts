@@ -1,8 +1,11 @@
 import {$} from 'bun'
 import buildFront from './build-front.ts'
 import buildBack from './build-back.ts'
-import {ReactRoute, type Route} from 'src/route'
+import {ReactRoute, type Route as OriginalRoute} from 'src/route'
+import type {Route as VoldemortasRoute} from 'voldemortas-server/route'
 import buildGlobalScss from './build-global.scss'
+
+type Route = OriginalRoute | VoldemortasRoute
 
 export default async function build({
   outDir,

@@ -1,5 +1,8 @@
 import {getPage, htmlHeaders, isProd} from 'src/utils'
-import {ReactRoute, Route} from 'src/route'
+import type {ReactRoute, Route as OriginalRoute} from 'src/route'
+import {type Route as VoldemortasRoute} from 'voldemortas-server/route'
+
+type Route = OriginalRoute | VoldemortasRoute
 
 export default async function renderReact(
   request: Request,
@@ -13,7 +16,11 @@ export default async function renderReact(
     defaultHtml.replaceAll(/^\./g, import.meta.dir)
   ).text()
 
-  const page = getPage(request, 'react', routes) as ReactRoute
+  const page = getPage(
+    request,
+    'react',
+    routes as OriginalRoute[]
+  ) as ReactRoute
   const path = page.reactPath.replace(/\.tsx$/, '')
   const devHtmlFile = Bun.file(developmentHtml)
   const devHtml =

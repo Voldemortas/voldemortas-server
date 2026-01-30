@@ -2,8 +2,11 @@ import Watch from 'src/build/watch'
 import build from 'src/build/builder.ts'
 import serve from 'src/build/serve.ts'
 import reactRenderImpl from 'src/renderReact'
-import {BackRoute, RedirectRoute, type Route} from 'src/route'
+import {BackRoute, RedirectRoute, type Route as OriginalRoute} from 'src/route'
+import {type Route as VoldemortasRoute} from 'voldemortas-server/route'
 import {getConfigVars, getPage, getUrl, isProd, parseArgs} from 'src/utils'
+
+type Route = OriginalRoute | VoldemortasRoute
 
 const lastUpdated = new Date().getTime().toString()
 const {HASH, PORT, HOSTNAME} = getConfigVars()
@@ -175,7 +178,11 @@ export default class Server {
   }
 
   private async serveRedirect(request: Request) {
-    const page = getPage(request, 'redirect', this.routes) as RedirectRoute
+    const page = getPage(
+      request,
+      'redirect',
+      this.routes as OriginalRoute[]
+    ) as RedirectRoute
     return await this.serveStatic(request, page)
   }
 
