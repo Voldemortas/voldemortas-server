@@ -1,5 +1,11 @@
 # voldemortas-server
 
+## !!! Deprecation/Archived warning !!!
+
+This has been archived and the latest version can be found
+on [Voldemortas/server](https://github.com/Voldemortas/server) repo and
+at [@voldemortas/server](https://jsr.io/@voldemortas/server) JSR registry.
+
 ## About
 
 The project lets you run a [bun](https://bun.sh/) powered server that several kinds of pages on the routes you define
